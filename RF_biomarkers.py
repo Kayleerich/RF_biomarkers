@@ -1,5 +1,5 @@
 import argparse
-from pathlib import Path, PurePath
+from pathlib import Path
 import sys
 import traceback
 from time import localtime, strftime
@@ -8,7 +8,7 @@ from rfbiomarker import RFBiomarkers
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(usage='%(prog)s [-h] -i INPUT -o DIR -c COLUMN -t TARGET [-d -f -r -p -v -w --min --max --test_size --seeds --force --unsup]', description='Uses random forest classifier and clustering to identify biomarkers')
-    parser.add_argument('-i', '--input', metavar='', nargs='?', type=argparse.FileType('r'), default=sys.stdin, help='Input TSV with column names')
+    parser.add_argument('-i', '--input', metavar='', type=argparse.FileType('r'), default=sys.stdin, help='Input TSV with column names (default from stdin)')
     parser.add_argument('-o', '--outdir', metavar='', type=str, required=False, help='Directory to save output files (default is current directory)') 
     parser.add_argument('-c', '--targets_col', metavar='', type=str, required=True, help='Name of column containing target values')
     parser.add_argument('-d', '--ID_col', metavar='', type=str, required=False, help='Name of column containing sample IDs')    
