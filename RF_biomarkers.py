@@ -8,7 +8,7 @@ from rfbiomarker import RFBiomarkers
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(usage='%(prog)s [-h] -i INPUT -o DIR -c COLUMN -t TARGET [-d -f -r -p -v -w --min --max --test_size --seeds --force --unsup]', description='Uses random forest classifier and clustering to identify biomarkers')
-    parser.add_argument('-i', '--input', metavar='', nargs='?', type=argparse.FileType('r'), default=sys.stdin, help='Input TSV with column names') ## check argparse.FileType() to make sure it works as expected
+    parser.add_argument('-i', '--input', metavar='', nargs='?', type=argparse.FileType('r'), default=sys.stdin, help='Input TSV with column names')
     parser.add_argument('-o', '--outdir', metavar='', type=str, required=False, help='Directory to save output files (default is current directory)') 
     parser.add_argument('-c', '--targets_col', metavar='', type=str, required=True, help='Name of column containing target values')
     parser.add_argument('-d', '--ID_col', metavar='', type=str, required=False, help='Name of column containing sample IDs')    
@@ -16,13 +16,13 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--fileid', metavar='', type=str, required=False, help='Optional name for output files')
     parser.add_argument('-p', '--predictors', metavar='', nargs='+', required=False, help='List of columns to use as predictors (space delim, by default uses all columns except for specified target column and sample IDs column)')
     parser.add_argument('-r', '--remove', metavar='', nargs='+', required=False, help='List of columns to not use as predictors (space delim, opposite of --predictors, i.e. will use all columns in data except for those specified and the target/sample ID columns)')
-    parser.add_argument('--min', metavar='', type=int, required=False, help='Minimum number of samples a feature must be present in (default is 5% of total)')
-    parser.add_argument('--max', metavar='', type=int, required=False, help='Maximum number of samples a feature must be present in (default is 95% of total)')
-    parser.add_argument('--test_size', metavar='', type=float, default=0.2, help='Test size used to train model (default test size is 0.2, i.e. will use 80% of data to train model and 20% to test)')
+    parser.add_argument('--min', metavar='', type=int, required=False, help='Minimum number of samples a feature must be present in (default is 5%% of total)')
+    parser.add_argument('--max', metavar='', type=int, required=False, help='Maximum number of samples a feature must be present in (default is 95%% of total)')
+    parser.add_argument('--test_size', metavar='', type=float, default=0.2, help='Test size used to train model (default test size is 0.2, i.e. will use 80%% of data to train model and 20%% to test)')
     parser.add_argument('--seeds', metavar='', type=int, nargs=2, required=False, help='Seed/random state values to use for subsampling training data and running model (by default will calculate best seeds)')
     parser.add_argument('-w','--write', metavar='', type=str, required=False, choices=['none', 'all'], help='Model data to write to parameters.txt. Options are: "none" or "all" (default behavior writes pertinent information)')
     parser.add_argument('--force', action='store_true', required=False, help='Overwrite previous output files')
-    parser.add_argument('--unsup', action='store_true', required=False, help='Not recommended! Run unsupervised RF (by default will train RF on 80% of data, use --test_size to change)')
+    parser.add_argument('--unsup', action='store_true', required=False, help='Not recommended! Run unsupervised RF (by default will train RF on 80%% of data, use --test_size to change)')
     parser.add_argument('--version', action='version', version='%(prog)s 0.1')
     args = parser.parse_args()
     
