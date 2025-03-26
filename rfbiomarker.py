@@ -36,6 +36,7 @@ class RFBiomarkers():
         self.params_file = Path(f'{self.outdir}/{self.fileID}parameters.tsv')
 
         self.y = self.data[self.targets]
+        [self.level1, self.level2] = list(set(self.y))
         self.X = self.data.drop(columns=[c for c  in self.data.columns.to_list() if c not in self.predictors])
         self.X[self.targets] = self.y
 
@@ -263,8 +264,8 @@ class RFBiomarkers():
             with open(pval_file, "w") as pvalfile:
                 pval_df = self.fgc.p_value_of_features_per_cluster
                 pval_df.columns = ['p-value_1', 'p-value_2']
-                distr_df = pd.DataFrame(self.array_dict, index=['HIGH_1_absent', 'HIGH_1_present', 'LOW_1_absent', 'LOW_1_present', 'HIGH_2_absent', 'HIGH_2_present', 'LOW_2_absent', 'LOW_2_present'])
-                pd.concat([distr_df, pval_df]).to_csv(
+                distr_df = pd.DataFrame(self.array_dict, index=[f'{self.level1}_1_absent', f'{self.level1}_1_present', f'{self.level2}_1_absent', f'{self.level2}_1_present', f'{self.level1}_2_absent', f'{self.level1}_2_present', f'{self.level2}_2_absent', f'{self.level2}_2_present'])
+                pd.concat([distr_df, pval_df.T]).to_csv(
                         pvalfile, sep='\t', index=True)
 
             info_str = [f'Number of potential biomarkers (num_biomarker): {len(self.clust_ogs)}\n', f'Feature importance scores written to: {str(importance_file.resolve())}\n', f'Feature distributions and p-values written to: {str(pval_file.resolve())}\n']
