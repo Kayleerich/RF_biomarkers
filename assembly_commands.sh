@@ -17,6 +17,6 @@ bakta --force --db bakta_downloads/db -o results/${strain}/bakta -p ${strain}_ba
 
 ## to run:
 # for file in data/raw_reads/*_L001_R1_001.fastq.gz; do
-#     strain=$( echo $file | cut -f 3 -d '/' | cut -f 1 -d '.' )
+#     strain=$( echo $file | cut -f 3 -d '/' | cut -f 1,2 -d '_' )
 #     sh assembly_commands.sh ${strain}
 # done
