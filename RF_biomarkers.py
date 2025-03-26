@@ -8,7 +8,7 @@ from rfbiomarker import RFBiomarkers
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(usage='%(prog)s [-h] -i INPUT -o DIR -c COLUMN -t TARGET [-d -f -r -p -v -w --min --max --test_size --seeds --force --unsup]', description='Uses random forest classifier and clustering to identify biomarkers')
-    parser.add_argument('-i', '--input', metavar='', type=argparse.FileType('r'), default=sys.stdin, help='Input TSV with column names (default from stdin)')
+    parser.add_argument('-i', '--input', metavar='', type=argparse.FileType('r'), nargs='?', help='Input tab-separated data with column names')
     parser.add_argument('-o', '--outdir', metavar='', type=str, required=False, help='Directory to save output files (default is current directory)') 
     parser.add_argument('-c', '--targets_col', metavar='', type=str, required=True, help='Name of column containing target values')
     parser.add_argument('-d', '--ID_col', metavar='', type=str, required=False, help='Name of column containing sample IDs')    
@@ -25,36 +25,37 @@ if __name__ == '__main__':
     parser.add_argument('--unsup', action='store_true', required=False, help='Not recommended! Run unsupervised RF (by default will train RF on 80%% of data, use --test_size to change)')
     parser.add_argument('--version', action='version', version='%(prog)s 0.1')
     args = parser.parse_args()
-    
-    if not args.outdir:
-        outdir = Path.cwd()
-    elif Path(args.outdir).exists():
-        outdir = Path(args.outdir) 
-    else:
-        try:
-            Path(args.outdir).mkdir()
-        except PermissionError:
-            write_str = f'-o/--outdir: unable to create "{args.outdir}/", permission denied'
-            raise PermissionError(write_str)
-        outdir = Path(args.outdir)
-    [fileID, write_str] = [f'{args.fileid}_', f' (ID name for files (fileID): {args.fileid})'] if args.fileid else ['', '']
-    write = args.write if args.write else "default"
-
-    if Path(f'{outdir}/{fileID}parameters.tsv').is_file():
-        if not args.force:
-            write_str = ''.join([f'Analysis output files in {str(outdir.resolve())} ', '"'.join(['with fileID' , args.fileid, '" ']) if args.fileid else '', 'already exist, use --force to ignore this error and overwrite these files'])
-            raise FileExistsError(write_str)
-
-    if write != 'none':
-        with open(f'{outdir}/{fileID}info.txt', "w") as f:
-            f.write(f'RFbiomarkers version 0.1\nStart time: {strftime("%Y-%m-%d %H:%M:%S", localtime())}\n')
-            f.write(f'Writing files to (outdir): {outdir.resolve()}{write_str}\n\n')
-    with open(f'{outdir}/{fileID}parameters.tsv', "w") as p:
-        p.write(f'# RFbiomarkers version 0.1\n# Start time: {strftime("%Y-%m-%d %H:%M:%S", localtime())}\n')
-        p.write(f'outdir\t{outdir.resolve()}\n')
-        p.write(f'fileID\t{args.fileid}\n')
-
     try:
+        if not args.input:
+            raise ValueError(f'-i/--input: No input data. Please provide tab-separated data via an input file or stdin')
+        if not args.outdir:
+            outdir = Path.cwd()
+        elif Path(args.outdir).exists():
+            outdir = Path(args.outdir) 
+        else:
+            try:
+                Path(args.outdir).mkdir()
+            except PermissionError:
+                write_str = f'-o/--outdir: unable to create "{args.outdir}/", permission denied'
+                raise PermissionError(write_str)
+            outdir = Path(args.outdir)
+        [fileID, write_str] = [f'{args.fileid}_', f' (ID name for files (fileID): {args.fileid})'] if args.fileid else ['', '']
+        write = args.write if args.write else "default"
+
+        if Path(f'{outdir}/{fileID}parameters.tsv').is_file():
+            if not args.force:
+                write_str = ''.join([f'-f/--fileID: analysis output files in {str(outdir.resolve())} ', '"'.join(['with file ID' , args.fileid, '" ']) if args.fileid else '', 'already exist. Provide a unique file ID or use --force to ignore this error and overwrite these files'])
+                raise FileExistsError(write_str)
+
+        if write != 'none':
+            with open(f'{outdir}/{fileID}info.txt', "w") as f:
+                f.write(f'RFbiomarkers version 0.1\nStart time: {strftime("%Y-%m-%d %H:%M:%S", localtime())}\n')
+                f.write(f'Writing files to (outdir): {outdir.resolve()}{write_str}\n\n')
+        with open(f'{outdir}/{fileID}parameters.tsv', "w") as p:
+            p.write(f'# RFbiomarkers version 0.1\n# Start time: {strftime("%Y-%m-%d %H:%M:%S", localtime())}\n')
+            p.write(f'outdir\t{outdir.resolve()}\n')
+            p.write(f'fileID\t{args.fileid}\n')
+
         data = pd.read_csv(args.input, sep='\t')
         if args.ID_col in data.columns:
             data.set_index(args.ID_col, inplace=True)
