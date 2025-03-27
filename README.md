@@ -24,3 +24,41 @@ Input example:
         0    0    0    level_2
 ```
 Dependencies: `pandas`, `numpy`, `sklearn`, `fgclustering`, `matplotlib`, `seaborn`
+
+Optional arguments:
+```
+  -h, --help            show this help message and exit
+
+  -i, --input           Input TSV with column names (default from stdin)
+
+  -o, --outdir          Directory to save output files (default is current directory)
+
+  -c, --targets_col     Name of column containing target values
+
+  -d, --ID_col          Name of column containing sample IDs
+
+  -t, --toi             Target value of interest
+
+  -f, --fileid          Optional name for output files
+
+  -p, --predictors      List of columns to use as predictors (space delim, by default uses all columns except for specified target
+                        column and sample IDs column)
+
+  -r, --remove          List of columns to not use as predictors (space delim, opposite of --predictors, i.e. will use all columns
+                        in data except for those specified and the target/sample ID columns)
+
+  --min                 Minimum number of samples a feature must be present in (default is 5% of total)
+
+  --max                 Maximum number of samples a feature must be present in (default is 95% of total)
+
+  --test_size           Test size used to train model (default test size is 0.2, i.e. will use 80% of data to train model and 20%
+                        to test)
+
+  -s, --seeds           Seed/random state values to use for subsampling training data and running model (by default will calculate
+                        best seeds)
+
+  -w, --write           Model data to write to parameters.txt. Options are: "none" or "all" (default behavior writes pertinent
+                        information)
+
+  --force               Overwrite previous output files
+```
