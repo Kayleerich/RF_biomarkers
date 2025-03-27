@@ -165,11 +165,10 @@ if __name__ == '__main__':
         rfcls.generate_RFclusters()
         
         rfcls.get_biomarkers() 
-        for og in rfcls.__dict__['clust_ogs']:
-            print(f'{og}')
-        # rfcls.identical_distr()
 
-        # rfcls.distribution_subplots() 
+        rfcls.identical_distr()
+
+        rfcls.distribution_subplots() 
 
         if write != 'none':
             with open(f'{outdir}/{fileID}info.txt', "a") as f:

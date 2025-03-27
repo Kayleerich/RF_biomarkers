@@ -21,7 +21,6 @@ class RFBiomarkers():
         self.predictors = predictors ## columns to use as predictors
         self.targets = targets_col ## column to use as target
         self.toi = toi ## specific target of interest
-        self.max_thresh = max_thresh
         self.RF_type = RF_type
         self.outdir = outdir
         self.fileID = fileID
@@ -33,6 +32,7 @@ class RFBiomarkers():
         [self.level1, self.level2] = list(set(self.y))
         self.X = self.data.drop(
             columns=[c for c  in self.data.columns.to_list() if c not in self.predictors])
+        # filter out genes that are always present/absent in the same isolates (only keep one)
         self.X = self.X.T.drop_duplicates().T
         if not min_thresh:
             min_thresh=(round(self.X.shape[0]*0.05))
@@ -40,7 +40,8 @@ class RFBiomarkers():
         if not max_thresh:
             max_thresh=(round(self.X.shape[0]*0.95))
         self.max_thresh = max_thresh
-        while True: ## can only work if all predictor values are 1 or 0
+        # filter out genes that are in too many or too few isolates (i.e. core/cloud genomes)
+        while True: # !! currently only works if all predictor values are 1 or 0
             prev_shape = self.X.shape
             cols_sum = self.X.sum(axis=0, numeric_only=True)
             drop_cols = cols_sum[cols_sum < self.min_thresh].index
